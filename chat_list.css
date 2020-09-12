@@ -1,0 +1,32 @@
+.container {
+    width: 400px;
+}
+
+.chat-list-item {
+    padding: 20px;
+    border: 1px solid lightgray;
+    position: relative;
+    background-color: rgba(128, 128, 128, 0.1);
+    cursor: pointer;
+}
+
+.chat-list-item:hover {
+     background-color: rgba(128, 128, 128, 0.3);
+}
+
+.chat-list-item_recipient {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.chat-list-item_last-message {
+    font-size: 14px;
+    color: gray;
+    padding: 20px;
+}
+
+.chat-list-item_date {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
