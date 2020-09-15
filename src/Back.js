@@ -20,10 +20,6 @@ class BackAuth {
     async login(email, password){
         return await fetch(this.apiURL, {
             method: 'GET',
-            body: JSON.stringify({
-                email,
-                password,
-            }),
             headers:{
                 'Content-Type': 'application/json'
             },
