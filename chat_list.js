@@ -1,3 +1,7 @@
+// TODO replace with actual one
+const renderMessages = () => {
+};
+
 window.onload = async function init() {
     const chats = await apiService.getChats();
     const chatListComponent = new ChatListComponent(chats);
@@ -7,7 +11,9 @@ window.onload = async function init() {
 class ChatListComponent {
     constructor(chats) {
         this.container = document.querySelector('.container');
-        this.chatListItemComponents = chats.map((chatData) => new ChatListItemComponent(chatData));
+        this.chatListItemComponents = chats.map((chatData) =>
+            new ChatListItemComponent(chatData, this.onChatClick.bind(this))
+        );
     }
 
     render() {
@@ -15,11 +21,18 @@ class ChatListComponent {
             ...this.chatListItemComponents.map((chatListItemComponent) => chatListItemComponent.render())
         );
     }
+
+    async onChatClick(id) {
+        const messages = await apiService.getMessages(id);
+
+        renderMessages(messages);
+    }
 }
 
 class ChatListItemComponent {
-    constructor(chatData) {
+    constructor(chatData, onClick) {
         this.chatData = chatData;
+        this.onClick = onClick;
     }
 
     render() {
@@ -35,6 +48,8 @@ class ChatListItemComponent {
             ['chat-list-item_last-message'],
             [document.createTextNode(this.chatData.lastMessage)]
         );
-        return DOMUtils.createDivBlock(['chat-list-item'], [recipient, date, lastMessage]);
+        const itemContainer = DOMUtils.createDivBlock(['chat-list-item'], [recipient, date, lastMessage]);
+        itemContainer.addEventListener('click', () => this.onClick(this.chatData.id));
+        return itemContainer;
     }
 }

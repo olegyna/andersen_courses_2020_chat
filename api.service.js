@@ -7,6 +7,11 @@ class ApiService {
         const response = await fetch(`${this.apiURL}chats`);
         return await response.json();
     }
+
+    async getMessages(id) {
+        const response = await fetch(`${this.apiURL}chats/${id}/messages`);
+        return await response.json();
+    }
 }
 
 const apiService = new ApiService();
