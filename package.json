@@ -14,8 +14,6 @@
   "author": "Demchenko Oleh",
   "license": "ISC",
   "homepage": "https://bitbucket.org/olegyna/chat_anderson_courses#readme",
-  "devDependencies": {
-
-  },
+  "devDependencies": {},
   "dependencies": {}
 }

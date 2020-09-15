@@ -8,9 +8,14 @@ class ApiService {
         return await response.json();
     }
 
-    async getMessages(id) {
-        const response = await fetch(`${this.apiURL}chats/${id}/messages`);
-        return await response.json();
+    async getMessages() {
+        try {
+            const response = await fetch(`${this.apiURL}chats`);
+            const json = await response.json();
+            return JSON.stringify(json);
+          } catch (error) {
+            console.error('Ошибка', error);
+          }
     }
 }
 
