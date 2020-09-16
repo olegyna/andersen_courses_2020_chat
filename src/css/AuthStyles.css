@@ -1,7 +1,7 @@
 .wrapper{ 
     width: 400px;
     height: 330px;
-    margin: auto 37%;
+    margin: 10% 37%;
     background-color: rgba(128, 128, 128, 0.1);
     color: black;
     padding: 30px;
@@ -9,6 +9,7 @@
 
 .wrapperReg{
     height: 550px;
+    margin-top: 10%;
 }
 
 
@@ -42,7 +43,7 @@ hr {
 }
 
 #registerButton{
-    background-color: red;
+    background-color: #4CAF50;
 }
 
 

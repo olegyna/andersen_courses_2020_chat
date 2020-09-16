@@ -17,12 +17,14 @@ class BackAuth {
         })
     }
 
-    async login(email, password){
-        return await fetch(this.apiURL, {
+    login(email, password){
+       return fetch(this.apiURL, {
             method: 'GET',
             headers:{
                 'Content-Type': 'application/json'
             },
+        }).then(response =>{
+            return response.json();
         })
     }
 }
