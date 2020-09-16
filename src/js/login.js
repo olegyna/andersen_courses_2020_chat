@@ -1,4 +1,4 @@
-import {BackAuth} from './Back.js';
+import {BackAuth} from './Back.js'
 
 
 const email = document.getElementById('loginEmail');
