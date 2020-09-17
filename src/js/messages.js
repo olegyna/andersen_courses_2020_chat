@@ -1,8 +1,8 @@
 class Messages {
-  constructor(messages) {
+  constructor(messages, sender_id, receiver_id) {
     this.messagesList = messages || [];
-    this.sender_id = 1;
-    this.receiver_id = 5;
+    this.sender_id = sender_id;
+    this.receiver_id = receiver_id;
     this.chatNode = document.querySelector('.chat__items');
     this.chatInput = document.querySelector('.chat__message');
     this.chatBtn = document.querySelector('.chat__btn');
@@ -20,7 +20,6 @@ class Messages {
 
   render() {
     this.messagesList.forEach((message) => {
-      console.log(message);
       this.createMessage(message.message, message.sender_id);
     });
 
@@ -28,7 +27,7 @@ class Messages {
 
     this.chatInput.addEventListener('keypress', (event) => {
       if (event.key === 'Enter') {
-        apiService.addMessage(1, 3, this.chatInput.value);
+        apiService.addMessage(this.sender_id, this.receiver_id, this.chatInput.value);
         this.createMessage(this.chatInput.value, this.sender_id);
         this.showLastMessage();
         this.chatInput.value = '';
@@ -36,7 +35,7 @@ class Messages {
     });
 
     this.chatBtn.addEventListener('click', () => {
-      apiService.addMessage(1, 3, this.chatInput.value);
+      apiService.addMessage(this.sender_id, this.receiver_id, this.chatInput.value);
       this.createMessage(this.chatInput.value, this.sender_id);
       this.showLastMessage();
       this.chatInput.value = '';
@@ -50,7 +49,9 @@ class Messages {
 }
 
 window.onload = async function init() {
+  const sender = JSON.parse(localStorage.getItem('user')).id;
+  const receiver = 1;
   const messages = await apiService.getMessages();
-  const messagesComponent = new Messages(messages);
+  const messagesComponent = new Messages(messages, sender, receiver);
   messagesComponent.render();
 };
