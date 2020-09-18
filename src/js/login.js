@@ -1,33 +1,47 @@
-import {BackAuth} from './Back.js'
+import {DOMUtils} from './DOM.utils';
 
 
-const email = document.getElementById('loginEmail');
-const password = document.getElementById('password');
-const submit = document.getElementById('loginButton');
-const registerButton = document.getElementById('registerButton');
-
-registerButton.addEventListener('click', () =>{
-    document.location = './register.html';
-})
-
-const Back = new BackAuth;
-
-submit.addEventListener('click', async () =>{
-    const data = await Back.login()
-    const userInfo = data.find(user => {
-        return user.email === email.value && user.password === password.value;
-    })
-    if(userInfo){
-        const {id, username} = userInfo;
-        localStorage.setItem('user', JSON.stringify({id, username}));
-        document.location = './index.html';
+export class LoginFormComponent {
+    constructor(onSubmit, onRegister) {
+        this.onSubmit = onSubmit;
+        this.onRegister = onRegister;
     }
-    else{
-        email.value = '';
-        password.value = '';
-        password.style.border = '1px solid red';
-        email.style.border = '1px solid red';
-        email.placeholder = 'wrong email or password';
-        password.placeholder = 'try enter again';
+
+    render() {
+        this.emailLabel = DOMUtils.createLabel('loginEmail', 'Username');
+        this.emailInput = DOMUtils.createInput('loginEmail', 'Enter Email', 'email');
+        this.passwordLabel = DOMUtils.createLabel('password', 'Password');
+        this.passwordInput = DOMUtils.createInput('password', 'Enter Password', 'psw', 'password');
+        this.registerButton = DOMUtils.createButton('registerButton', 'Sign up', ['registerBtn']);
+        this.loginButton = DOMUtils.createButton('loginButton', 'Sign in', ['registerBtn']);
+
+        this.loginButton.addEventListener('click', () =>
+            this.onSubmit(this.emailInput.value, this.passwordInput.value)
+        );
+        this.registerButton.addEventListener('click', () => this.onRegister());
+
+        return DOMUtils.createDivBlock(
+            ['wrapper'],
+            [
+                this.emailLabel,
+                this.emailInput,
+                this.passwordLabel,
+                this.passwordInput,
+                this.registerButton,
+                this.loginButton
+            ]
+        );
     }
-})
+
+    clearInputValues() {
+        this.emailInput.value = '';
+        this.passwordInput.value = '';
+    }
+
+    setErrorMode() {
+        this.passwordInput.style.border = '1px solid red';
+        this.passwordInput.placeholder = 'try enter again';
+        this.emailInput.style.border = '1px solid red';
+        this.emailInput.placeholder = 'wrong email or password';
+    }
+}
