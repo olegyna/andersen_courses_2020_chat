@@ -1,57 +1,57 @@
-class Messages {
-  constructor(messages, sender_id, receiver_id) {
-    this.messagesList = messages || [];
-    this.sender_id = sender_id;
-    this.receiver_id = receiver_id;
-    this.chatNode = document.querySelector('.chat__items');
-    this.chatInput = document.querySelector('.chat__message');
-    this.chatBtn = document.querySelector('.chat__btn');
-  }
+import {DOMUtils} from './DOM.utils';
 
-  createMessage(text, sender_id) {
-    const messageItem = document.createElement('li');
-    messageItem.classList.add('chat__item');
-    if (sender_id == this.sender_id) {
-      messageItem.classList.toggle('author');
-    }
-    messageItem.innerText = text;
-    this.chatNode.append(messageItem);
-  }
-
-  render() {
-    this.messagesList.forEach((message) => {
-      this.createMessage(message.message, message.sender_id);
-    });
-
-    this.showLastMessage();
-
-    this.chatInput.addEventListener('keypress', (event) => {
-      if (event.key === 'Enter') {
-        apiService.addMessage(this.sender_id, this.receiver_id, this.chatInput.value);
-        this.createMessage(this.chatInput.value, this.sender_id);
-        this.showLastMessage();
-        this.chatInput.value = '';
-      }
-    });
-
-    this.chatBtn.addEventListener('click', () => {
-      apiService.addMessage(this.sender_id, this.receiver_id, this.chatInput.value);
-      this.createMessage(this.chatInput.value, this.sender_id);
-      this.showLastMessage();
-      this.chatInput.value = '';
-    });
-  }
-
-  showLastMessage() {
-    const block = document.querySelector('.chat__messages');
-    block.scrollTop = block.scrollHeight;
-  }
+function isAuthor() {
+    return Math.random() > 0.5;
 }
 
-window.onload = async function init() {
-  const sender = JSON.parse(localStorage.getItem('user')).id;
-  const receiver = 1;
-  const messages = await apiService.getMessages();
-  const messagesComponent = new Messages(messages, sender, receiver);
-  messagesComponent.render();
-};
+export class MessagesComponent {
+    constructor(messages, sender_id, onMessageCreate) {
+        this.messagesList = messages || [];
+        this.sender_id = sender_id;
+        this.onMessageCreate = onMessageCreate;
+    }
+
+    createMessage(text) {
+        const messageItem = DOMUtils.createListItem(['chat__item', isAuthor() ? 'author' : 'non-author'], text);
+
+        this.chatNode.append(messageItem);
+    }
+
+    render() {
+        this.chatNode = DOMUtils.createUnorderedList(['chat__items']);
+        this.chatMessagesContainer = DOMUtils.createDivBlock(['chat__messages'], [this.chatNode]);
+        this.chatInput = DOMUtils.createInput('chatInput', 'Type a message', '', 'text', ['chat__message'], false);
+        const btnImage = DOMUtils.createImage('./src/img/send.png', 'send', ['chat__img']);
+        this.chatBtn = DOMUtils.createDivBlock(['chat__btn'], [btnImage]);
+        const chatArea = DOMUtils.createDivBlock(['chat__area'], [this.chatInput, this.chatBtn]);
+        const messagesSection = DOMUtils.createSection(['chat'], [this.chatMessagesContainer, chatArea]);
+
+        this.messagesList.forEach((message) => {
+            this.createMessage(message.text);
+        });
+
+        this.showLastMessage();
+
+        this.chatInput.addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                this.onMessageCreate(this.sender_id, this.chatInput.value);
+                this.createMessage(this.chatInput.value, this.sender_id);
+                this.showLastMessage();
+                this.chatInput.value = '';
+            }
+        });
+
+        this.chatBtn.addEventListener('click', () => {
+            this.onMessageCreate(this.sender_id, this.chatInput.value);
+            this.createMessage(this.chatInput.value, this.sender_id);
+            this.showLastMessage();
+            this.chatInput.value = '';
+        });
+
+        return messagesSection;
+    }
+
+    showLastMessage() {
+        this.chatMessagesContainer.scrollTop = this.chatMessagesContainer.scrollHeight;
+    }
+}

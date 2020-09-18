@@ -1,31 +1,16 @@
-// TODO replace with actual one
-const renderMessages = () => {
-};
+import {DOMUtils} from './DOM.utils';
 
-window.onload = async function init() {
-    const chats = await apiService.getChats();
-    const chatListComponent = new ChatListComponent(chats);
-    chatListComponent.render();
-};
-
-class ChatListComponent {
-    constructor(chats) {
-        this.container = document.querySelector('.container');
-        this.chatListItemComponents = chats.map((chatData) =>
-            new ChatListItemComponent(chatData, this.onChatClick.bind(this))
-        );
+export class ChatListComponent {
+    constructor(chats, onChatClick) {
+        this.chats = chats;
+        this.onChatClick = onChatClick;
     }
 
     render() {
-        this.container.append(
-            ...this.chatListItemComponents.map((chatListItemComponent) => chatListItemComponent.render())
-        );
-    }
-
-    async onChatClick(id) {
-        const messages = await apiService.getMessages(id);
-
-        renderMessages(messages);
+        const chatListItemComponents = this.chats
+            .map((chatData) => new ChatListItemComponent(chatData, this.onChatClick))
+            .map(chatListItemComponent => chatListItemComponent.render());
+        return DOMUtils.createDivBlock(['chat-list-container'], chatListItemComponents)
     }
 }
 

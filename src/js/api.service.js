@@ -1,36 +1,61 @@
-class ApiService {
+export class ApiService {
     constructor() {
         this.apiURL = 'https://5f5e06718b224700167c5464.mockapi.io/';
     }
 
-    async getChats() {
-        const response = await fetch(`${this.apiURL}chats`);
+    async register(username, email, password) {
+        return await fetch(`${this.apiURL}/authentication`, {
+            method: 'POST',
+            body: JSON.stringify({
+                username,
+                email,
+                password,
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+    }
+
+    async getUsers() {
+        const response = await fetch(`${this.apiURL}/authentication`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
         return await response.json();
     }
 
-    async getMessages() {
-        try {
-            const response = await fetch(`${this.apiURL}chats`);
-            return await response.json();
-          } catch (error) {
-            console.error('Ошибка', error);
-          }
+    async getChats() {
+        const response = await fetch(`${this.apiURL}new-chats`);
+        return await response.json();
     }
 
-    async addMessage(sender_id, receiver_id, text) {
-        let response = await fetch(`${this.apiURL}chats`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({
-                "receiver_id": receiver_id,
-                "sender_id": sender_id,
-                "message": text,
-                "date": Date.now()
-              })
-          });
+    async getMessages(chatId) {
+        try {
+            const response = await fetch(`${this.apiURL}new-messages`);
+            return await response.json();
+        } catch (error) {
+            console.error('Ошибка', error);
+        }
+    }
+
+    async createMessage(userId, chatId, text) {
+        try {
+            await fetch(`${this.apiURL}new-messages`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify({
+                    userId,
+                    chatId,
+                    text,
+                })
+            });
+        } catch (error) {
+            console.error('Ошибка', error);
+        }
     }
 }
-
-const apiService = new ApiService();
