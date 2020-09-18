@@ -5,14 +5,18 @@ function isAuthor() {
 }
 
 export class MessagesComponent {
-    constructor(messages, sender_id, onMessageCreate) {
+    constructor(messages, sender_id, chatId, onMessageCreate) {
         this.messagesList = messages || [];
         this.sender_id = sender_id;
+        this.chatId = chatId;
         this.onMessageCreate = onMessageCreate;
     }
 
-    createMessage(text) {
-        const messageItem = DOMUtils.createListItem(['chat__item', isAuthor() ? 'author' : 'non-author'], text);
+    createMessage(text, isAuthorForce = false) {
+        const messageItem = DOMUtils.createListItem([
+            'chat__item',
+            isAuthorForce || isAuthor() ? 'author' : 'non-author'
+        ], text);
 
         this.chatNode.append(messageItem);
     }
@@ -30,20 +34,24 @@ export class MessagesComponent {
             this.createMessage(message.text);
         });
 
-        this.showLastMessage();
+        setTimeout(() => this.showLastMessage(), 0);
 
         this.chatInput.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') {
-                this.onMessageCreate(this.sender_id, this.chatInput.value);
-                this.createMessage(this.chatInput.value, this.sender_id);
+            if (this.chatId && event.key === 'Enter') {
+                this.onMessageCreate(this.chatInput.value);
+                this.createMessage(this.chatInput.value, this.sender_id, true);
                 this.showLastMessage();
                 this.chatInput.value = '';
             }
         });
 
         this.chatBtn.addEventListener('click', () => {
-            this.onMessageCreate(this.sender_id, this.chatInput.value);
-            this.createMessage(this.chatInput.value, this.sender_id);
+            if (!this.chatId) {
+                return;
+            }
+
+            this.onMessageCreate(this.chatInput.value);
+            this.createMessage(this.chatInput.value, this.sender_id, true);
             this.showLastMessage();
             this.chatInput.value = '';
         });
