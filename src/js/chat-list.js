@@ -31,7 +31,7 @@ class ChatListItemComponent {
         );
         const lastMessage = DOMUtils.createDivBlock(
             ['chat-list-item_last-message'],
-            [document.createTextNode(this.chatData.lastMessage)]
+            [document.createTextNode(this.chatData.isOnline ? 'Online' : 'Offline')]
         );
         const itemContainer = DOMUtils.createDivBlock(['chat-list-item'], [recipient, date, lastMessage]);
         itemContainer.addEventListener('click', () => this.onClick(this.chatData.id));

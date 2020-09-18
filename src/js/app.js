@@ -25,6 +25,13 @@ export class App {
             this.chatListComponent = new ChatListComponent(chats, this.onChatClick.bind(this, id));
             this.mainContainer.innerHTML = null;
             this.mainContainer.appendChild(this.chatListComponent.render());
+            const messagesComponent = new MessagesComponent(
+                [],
+                id,
+                this.onMessageCreate.bind(this, id, null)
+            );
+            this.messagesComponentHTML = messagesComponent.render();
+            this.mainContainer.appendChild(this.messagesComponentHTML);
             this.loginComponent = null;
         } else {
             this.loginComponent.clearInputValues();
@@ -48,6 +55,7 @@ export class App {
         const messagesComponent = new MessagesComponent(
             messages,
             userId,
+            chatId,
             this.onMessageCreate.bind(this, userId, chatId)
         );
         this.messagesComponentHTML = messagesComponent.render();
